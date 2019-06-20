@@ -10,9 +10,9 @@ pipeline {
         archiveArtifacts(artifacts: 'got.war', fingerprint: true)
       }
     }
-    stage('Deploy To QA Tomcat') {
+    stage('Deploy To PROD Tomcat') {
       steps {
-        build job: 'GOT-Deploy-to-Test'
+        build job: 'GOT-Deploy-to-Prod'
       }
     }   
   }
