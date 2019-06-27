@@ -1,18 +1,18 @@
 pipeline {
   environment {
-     buildArtifact = "http://localhost:9090/repository/snapshots/com/sample/sandbox/1.0-SNAPSHOT/sandbox-1.0-20190606.202852-1.war"
+     buildArtifact = "http://localhost:9090/repository/internal/com/sample/sandbox/${BUILD_VERSION}/sandbox-${BUILD_VERSION}.war"
    }
   agent any
   stages {
     stage('Download Artifact') {
       steps {
-        bat label: '', script: 'curl %buildArtifact% --output got.war'
-        archiveArtifacts(artifacts: 'got.war', fingerprint: true)
+        bat label: '', script: "curl %buildArtifact% --output sandbox-${BUILD_VERSION}.war"
+        archiveArtifacts(artifacts: "sandbox-${BUILD_VERSION}.war", fingerprint: true)
       }
     }
     stage('Deploy To PROD Tomcat') {
       steps {
-        build job: 'GOT-Deploy-to-Prod'
+        build job: 'GOT-Deploy-to-Prod', parameters: [string(name: 'BUILD_VERSION', value: "${BUILD_VERSION}")]
       }
     }   
   }
